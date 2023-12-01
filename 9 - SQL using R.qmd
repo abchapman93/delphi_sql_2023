@@ -1,0 +1,38 @@
+---
+title: "Using SQL with R"
+format: html
+editor: visual
+---
+
+Similarly, we can use R in python using the `RSQLite` package:
+
+```{r}
+install.packages("RSQLite")
+```
+
+```{r}
+library(RSQLite)
+connection <- dbConnect(SQLite(), "survey.db")
+results <- dbGetQuery(connection, "SELECT Site.lat, Site.long FROM Site;")
+print(results)
+
+```
+
+```{r}
+survey = dbGetQuery(connection, "SELECT * FROM Survey;")
+str(survey)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+survey %>%
+  ggplot(aes(x=quant)) +
+    geom_bar(stat="count") +
+  facet_wrap(~person)
+```
+
+```{r}
+dbDisconnect(connection)
+```
